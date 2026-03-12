@@ -17,10 +17,10 @@ const { handleChatStream } = require('./services/chatbotService');
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = [
-  process.env.CLIENT_URL,
+  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : []),
   'http://localhost:3000',
   'http://localhost:5173'
-].filter(Boolean);
+].map(origin => origin.trim()).filter(Boolean);
 
 const io = new Server(server, {
   cors: {
