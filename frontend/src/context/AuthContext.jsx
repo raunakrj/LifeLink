@@ -15,6 +15,7 @@ const getApiUrl = () => {
 };
 
 export const API_URL = getApiUrl();
+export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

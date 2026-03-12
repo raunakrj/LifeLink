@@ -132,6 +132,15 @@ app.get('/', (req, res) => {
   res.send('LifeLink API is running...');
 });
 
+// API Status & Utility Routes
+app.get('/api', (req, res) => {
+  res.json({ status: 'ok', message: 'LifeLink API is running', version: '1.0.0' });
+});
+
+app.get('/api/users', (req, res) => {
+  res.json({ message: 'Use /api/profile to get your own profile data.' });
+});
+
 // Error Handler
 app.use(errorHandler);
 

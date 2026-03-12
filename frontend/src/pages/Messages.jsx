@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, API_URL, SOCKET_URL } from '../context/AuthContext';
 import { 
     Send, User, Search, MoreVertical, 
     ArrowLeft, Loader2, Image, Paperclip, 
@@ -23,8 +23,6 @@ const Messages = () => {
     const socketRef = useRef();
     const messagesEndRef = useRef();
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -84,6 +82,7 @@ const Messages = () => {
             setLoading(false);
         } catch (error) {
             console.error('Fetch chats failed', error);
+            setLoading(false); // Ensure loading stops on error
         }
     };
 

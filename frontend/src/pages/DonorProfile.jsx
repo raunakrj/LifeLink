@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, API_URL } from '../context/AuthContext';
 import { 
     Heart, MapPin, Droplet, Activity, 
     MessageSquare, Phone, User, ShieldCheck, 
@@ -16,8 +16,6 @@ const DonorProfile = () => {
     const [donor, setDonor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
     useEffect(() => {
         const fetchDonor = async () => {

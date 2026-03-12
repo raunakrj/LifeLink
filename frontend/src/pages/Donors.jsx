@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, API_URL } from '../context/AuthContext';
 import { cn } from '../lib/utils';
 import { Search, Droplet, MapPin, Phone, User, Activity, Loader2, Mail, Heart } from 'lucide-react';
 
@@ -35,13 +35,14 @@ const Donors = () => {
 
             params.append('limit', '50');
 
-            const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            const BASE_URL = API_URL;
             const url = `${BASE_URL}/donors/search?${params.toString()}`;
             
             const { data } = await axios.get(url, config);
             setDonors(data);
         } catch (error) {
             console.error('[ERROR] Failed to fetch donors:', error.response?.data || error.message);
+            setDonors([]); // Clear on error
         } finally {
             setLoading(false);
         }
@@ -49,7 +50,7 @@ const Donors = () => {
 
     const handleContact = async (donorId) => {
         try {
-            const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            const BASE_URL = API_URL;
             const { data } = await axios.post(`${BASE_URL}/chats/create`, { 
                 receiverId: donorId 
             }, {
