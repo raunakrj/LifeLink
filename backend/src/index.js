@@ -72,7 +72,7 @@ if (!aiKey || aiKey === 'your_anthropic_api_key_here') {
 }
 
 const { protect } = require('./middleware/authMiddleware');
-const { updateUserProfile } = require('./controllers/userController');
+const { getUserProfile, updateUserProfile } = require('./controllers/userController');
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -82,8 +82,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
 
-// Spec-specific profile endpoint
-app.put('/api/profile', protect, updateUserProfile);
+// Spec-specific profile endpoints
+app.route('/api/profile')
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile);
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);

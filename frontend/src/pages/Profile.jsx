@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, API_URL } from '../context/AuthContext';
 import { cn } from '../lib/utils';
 import { 
     User, Mail, Phone, MapPin, Droplet, 
@@ -11,11 +11,11 @@ import {
 } from 'lucide-react';
 
 const Profile = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [profileData, setProfileData] = useState(null);
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -28,10 +28,17 @@ const Profile = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.accessToken}` }
                 };
-                const { data } = await axios.get(`${API_URL}/users/profile`, config);
+                // Using standardized /api/profile endpoint
+                const { data } = await axios.get(`${API_URL}/profile`, config);
                 setProfileData(data);
             } catch (error) {
                 console.error('Fetch profile failed:', error);
+                if (error.response?.status === 401) {
+                    logout();
+                    navigate('/login');
+                } else {
+                    setError(error.response?.data?.message || 'Failed to load profile');
+                }
             } finally {
                 setLoading(false);
             }
@@ -54,7 +61,7 @@ const Profile = () => {
                 <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl text-center">
                     <ShieldCheck className="w-16 h-16 text-red-100 mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
-                    <p className="text-gray-500 mb-6">We couldn't retrieve your profile information.</p>
+                    <p className="text-gray-500 mb-6">{error || "We couldn't retrieve your profile information."}</p>
                     <button 
                         onClick={() => navigate('/')}
                         className="bg-red-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-red-700 transition-all"

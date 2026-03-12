@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, API_URL } from '../context/AuthContext';
 import { cn } from '../lib/utils';
 import { 
     User, Mail, Phone, MapPin, Droplet, 
@@ -32,7 +32,6 @@ const ProfileEdit = () => {
         availability: true
     });
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -45,7 +44,8 @@ const ProfileEdit = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.accessToken}` }
                 };
-                const { data } = await axios.get(`${API_URL}/users/profile`, config);
+                // Using standardized /api/profile endpoint
+                const { data } = await axios.get(`${API_URL}/profile`, config);
                 setFormData({
                     name: data.name || '',
                     email: data.email || '',
@@ -90,8 +90,8 @@ const ProfileEdit = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.accessToken}` }
             };
-            // Updated to spec endpoint: /api/profile
-            await axios.put(`${API_URL.replace('/users', '')}/profile`, formData, config);
+            // Standardized /api/profile endpoint
+            await axios.put(`${API_URL}/profile`, formData, config);
             setStatus({ type: 'success', message: 'Profile updated successfully!' });
             
             // Optional: Update local storage info if needed
