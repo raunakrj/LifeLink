@@ -2,8 +2,19 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
+axios.defaults.withCredentials = true;
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Ensure API_URL doesn't end with a slash, then append /api if missing
+const getApiUrl = () => {
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  url = url.replace(/\/$/, ''); // Remove trailing slash
+  if (!url.endsWith('/api')) {
+    url = `${url}/api`;
+  }
+  return url;
+};
+
+const API_URL = getApiUrl();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

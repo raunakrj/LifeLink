@@ -20,7 +20,8 @@ const allowedOrigins = [
   ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : []),
   'http://localhost:3000',
   'http://localhost:5173'
-].map(origin => origin.trim()).filter(Boolean);
+].map(origin => origin.trim().replace(/\/$/, '')).filter(Boolean);
+
 
 const io = new Server(server, {
   cors: {
